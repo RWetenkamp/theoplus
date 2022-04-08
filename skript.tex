@@ -1,0 +1,79 @@
+\documentclass[11pt,a4paper]{scrreport}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{listings}
+\usepackage{chngcntr}
+\usepackage{upgreek}
+\usepackage{pgfplots}
+\pgfplotsset{compat = newest}
+\usepackage{amsthm}
+\usepackage{ulem}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usetikzlibrary{positioning}
+\usepackage{tikz-network}
+
+\usepackage[backend=biber, style=alphabetic]{biblatex}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\titlehead{\begin{center}
+\includegraphics[scale=0.7]{DHBW.jpg}
+\end{center}}
+\title{Formale Sprachen und Automatentheorie II}
+\subtitle{Ergänzende Inhalte der theoretischen Informatik}
+\author{Roman Wetenkamp}
+
+\theoremstyle{remark}
+\newtheorem{note}{Bemerkung}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{satz}{Satz}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{example}{Beispiel}[section]
+
+\begin{document}
+\maketitle
+
+\pagebreak
+\tableofcontents
+\pagebreak
+\section*{Vorwort}
+Liebe*r Leser*in,\\\\
+die Theorie der Informatik -- sie begeistert Studierende vom ersten Semester an! Vielleicht unterschreiben Sie das, vielleicht interpretieren Sie es als ironisch -- in beiden Fällen sind Sie herzlich willkommen. Dieses Skript ist das Ergebnis meiner Beschäftigung mit weiteren, ergänzenden Themen der theoretischen Informatik, die über den Stoff der Vorlesung zu Formalen Sprachen und Automaten hinaus gingen. Damit versuche ich einerseits, mögliche Defizite meines dualen Studiums im Vergleich zu einem regulären Universitätsstudiums auszugleichen und andererseits ermöglicht es mir auch, mich didaktisch auszuprobieren. In meiner fernen Zielvorstellung bietet es Ihnen ebenfalls die Möglichkeit, sich weitere Inhalte der theoretischen Informatik anzueignen -- falls Sie dann noch Hochschullehrende finden sollten, die bereit sind, Ihnen für Ihre Arbeit ein paar ECTS-Punkte anzuerkennen, schließt dies vielleicht genau eine der Lücken, die sich aus dem Modulplan Ihres Bachelors und den Zulassungsvoraussetzungen der Universitäten für Informatik-Masterstudiengänge ergeben. Ich freue mich sehr über Ihre Erfahrungsberichte! \\\\
+Doch nun zu den Inhalten des Skriptes: Zunächst ordnen wir die Erkenntnisse zu regulären Sprachen und kontextfreien Grammatiken in die Hierarchie der Sprachen (Chomsky) ein. Anschließend beschäftigen wir uns mit Kellerautomaten und widmen uns der Entscheidbarkeit und Berechenbarkeitstheorie.
+\paragraph{Didaktisches Konzept}
+Der Zugang zu den Stoffinhalten folgt folgender Trias:
+\begin{enumerate}
+\item Verständliche, normalsprachliche Motivation (auch durch Bezüge zur Praxis)
+\item Formale Beschreibung und gegebenenfalls Beweise
+\item Anwendung und Vertiefung durch Aufgaben und Hintergrundinformationen
+\end{enumerate}
+Zu den Aufgaben befinden sich am Ende des Skriptes Lösungen. Das Skript ist für das Selbststudium konzipiert und wirkt daher stellenweise länglich. Durch farbliche Hervorhebungen versuche ich, vernachlässigbare Textpassagen kenntlich zu machen. 
+\paragraph{Projekt {\glqq}Masterplan{\grqq}} Ich habe während meines dualen Bachelorstudiums gemerkt, dass ich mein Studium nach dem Bachelor an einer Universität fortsetzen möchte. Nun unterscheiden sich die Modulpläne von HAWs und Universitäten jedoch stellenweise stark, sodass viele Universitäten spezielle Voraussetzungen für ein konsekutives Masterstudium angeben und so die Durchlässigkeit des Hochschulbildungssystems hemmen. Inwiefern dies auf deutsche Hochschulen zutrifft und inwieweit es Bachelorabsolventen von HAWs oder Dualen Hochschulen in ihrer Studienwahl einschränkt, sind Forschungsgegenstände des Projektes {\glqq}Masterplan{\grqq}. Die Ergebnisse des Projektes finden Sie unter \href{http://masterplan.rwetenkamp.de}{Masterplan}.
+\paragraph{Mitwirken} Ich freue mich jederzeit über Hinweise zu Fehlern oder Ungenauigkeiten. Auch, falls Sie weitere Aufgaben oder Inhalte anfügen möchten, sind Sie dazu herzlich eingeladen! Dieses Skript wird in einem \href{https://www.github.com/RWetenkamp/theoplus}{GitHub-Repository} verwaltet. Vielen Dank für Ihre Unterstützung!
+\\\\
+Viel Erfolg! \\\\
+Ihr Roman Wetenkamp \\
+Mannheim, den \today
+\pagebreak
+\chapter{Sprachklassen}
+Sprachen sind spannend. In unseren ersten Lebensjahren lernen wir die Sprache(n) unserer Eltern, noch so mühelos wie nie wieder. In der Schulzeit kommen Fremdsprachen hinzu, die wir mal mehr, mal weniger gerne lernen. Als Jugendliche experimentieren wir mit Sprache: Wir verändern sie, um uns von Erwachsenen abzugrenzen, nutzen Sie als Ausdruck unserer kulturellen Vielfalt. Später lernen Sie eine Programmiersprache und fügen Sie vielleicht scherzhaft der Liste Ihrer Sprachkenntnisse hinzu. Doch das ist weit mehr als ein plumper Nerdwitz: Diese und jene Sprachen eint viel!
+\begin{definition}
+Eine (formale) Sprache ist eine Menge von Zeichenketten, die aus den Symbolen eines beliebigen Alphabets aufgebaut sind. 
+\end{definition}
+Wenn Sie an das Sprachenlernen im schulischen Kontext denken, vergleichen Sie diese Definition vielleicht mit dem Vokabellernen. Demnach wäre Englisch die Menge aller englischen Wörter. Nun werden Sie vielleicht protestieren: Die bloße Kenntnis aller englischen Begriffe lässt Sie noch lange kein korrektes Englisch sprechen. Dafür gibt es die Grammatiken -- Regelwerke, die aussagen, wann ein Satz korrekt oder inkorrekt ist. Wenden wir uns nun wieder den formalen Sprachen zu, müssen wir zunächst feststellen, dass es verschiedene Typen von Grammatiken gibt. In Ihrer Vorlesung haben Sie höchstwahrscheinlich kontextfreie Grammatiken eingeführt -- Diese Klassen erweitern wir nun entsprechend einer Hierarchie von Noah Chomsky, der Chomsky-Hierarchie. Zunächst wiederholen wir reguläre Sprachen und kontextfreie Grammatiken, bevor wir zu kontextsensitiven und rekursiv aufzählbaren Grammatiken gelangen. Stellen Sie sich diesen Aufbau vor wie in der Schule: Sie beginnen mit natürlichen Zahlen, wagen irgendwann einen Schritt in die negative Richtung hin zu den ganzen Zahlen, dann treten Sie zwischen einzelne Stufen und erreichen rationale Zahlen, bevor Sie im Wahn die irrationalen, reellen und komplexen Zahlen einführen. Ähnlich dieser Teilmengenbeziehungen konstruieren wir nun auch die Sprachklassen der Chomsky-Hierarchie.
+\section{Die \textsc{Chomsky}-Hierarchie}
+\section{Typ 3: Reguläre Grammatiken}
+\section{Typ 2: Kontextfreie Grammatiken}
+\section{Typ 1: Kontextsensitive Grammatiken}
+\section{Typ 0: Rekursiv aufzählbare Grammatiken}
+\end{document}
