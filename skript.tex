@@ -130,6 +130,7 @@ Zu Beginn dieses Themengebiets der Theoretischen Informatik widmeten wir uns Aut
 \draw[->] (nea_e) -- (nea); 
 \end{tikzpicture}
 \caption{Äquivalenzkonstruktionen (Quelle: \parencite[][S. 30]{Hopcroft})}
+\label{eqcircle}
 \end{figure}
 Wir werden reguläre Grammatiken anhand der nächstgrößeren Klasse, der kontextfreien Grammatiken, definieren. So werden reguläre Grammatiken zu kontextfreien Grammatiken, die spezielle Bedingungen erfüllen. 
 \begin{definition}
@@ -171,7 +172,7 @@ A &\rightarrow \text{b } A \mid \epsilon
 \end{align*}
 und von der links-linearen Grammatik
 \begin{align*}
-S &\rightarrow S \text{ b} | \text{ a}
+S &\rightarrow S \text{ b } | \text{ a}
 \end{align*}
 erzeugt.
 \end{example}
@@ -182,6 +183,7 @@ Nun erinnern wir uns an den Zusammenhang zwischen regulären Mengen und endliche
 \begin{satz}
 Reguläre Grammatiken und endliche Automaten sind äquivalent.
 \end{satz}
+Wir geben an dieser Stelle nur eine Beweisidee an, der vollständige Beweis ist bei \parencite[][S. 228]{Hopcroft} zu finden. Um die Aussage zu beweisen, nehmen wir an, $L = L(G)$ gilt für eine rechts-lineare Grammatik $G = (V, T, R, S)$. Dann können wir einen NEA mit $\epsilon$-Übergangen aus den Ableitungsschritten konstruieren. Die Zustände dieses Automaten sind jeweils die linke oder rechte Seite der Produktionen. Nach Abbildung \ref{eqcircle} (samt entsprechender Beweise) erhalten wir nun, dass die rechts-lineare Grammatik eine reguläre Menge erzeugt. Für eine links-lineare Grammatik gilt das Beweisprinzip analog.
 \section{Typ 2: Kontextfreie Grammatiken}
 \section{Typ 1: Kontextsensitive Grammatiken}
 \section{Typ 0: Rekursiv aufzählbare Grammatiken}
