@@ -133,7 +133,7 @@ Zu Beginn dieses Themengebiets der Theoretischen Informatik widmeten wir uns Aut
 \label{eqcircle}
 \end{figure}
 Wir werden reguläre Grammatiken anhand der nächstgrößeren Klasse, der kontextfreien Grammatiken, definieren. So werden reguläre Grammatiken zu kontextfreien Grammatiken, die spezielle Bedingungen erfüllen. 
-\begin{definition}
+\begin{definition} \label{kfG}
 Eine \textbf{kontextfreie Grammatik} $G$ ist ein 4-Tupel $G = (V, T, P, S)$, wobei gilt:
 \begin{itemize}
 \item $V$ bezeichnet eine Menge von Variablen.
@@ -180,11 +180,39 @@ erzeugt.
 Wir erkennen eine Rekursivität: In beiden Fällen gibt es mindestens eine Variable, die sich selbst in einer ihrer Produktionen enthält. Daher wird die Links-Linearität bzw. Rechts-Linearität gelegentlich auch \textbf{Links-Rekursion} oder \textbf{Rechts-Rekursion} genannt.
 \end{note}
 Nun erinnern wir uns an den Zusammenhang zwischen regulären Mengen und endlichen Automaten -- gilt etwas Entsprechendes auch für reguläre Grammatiken?
-\begin{satz}
+\begin{satz} \label{eqSatz}
 Reguläre Grammatiken und endliche Automaten sind äquivalent.
 \end{satz}
 Wir geben an dieser Stelle nur eine Beweisidee an, der vollständige Beweis ist bei \parencite[][S. 228]{Hopcroft} zu finden. Um die Aussage zu beweisen, nehmen wir an, $L = L(G)$ gilt für eine rechts-lineare Grammatik $G = (V, T, R, S)$. Dann können wir einen NEA mit $\epsilon$-Übergangen aus den Ableitungsschritten konstruieren. Die Zustände dieses Automaten sind jeweils die linke oder rechte Seite der Produktionen. Nach Abbildung \ref{eqcircle} (samt entsprechender Beweise) erhalten wir nun, dass die rechts-lineare Grammatik eine reguläre Menge erzeugt. Für eine links-lineare Grammatik gilt das Beweisprinzip analog.
 \section{Typ 2: Kontextfreie Grammatiken}
+Kontextfreie Grammatiken haben wir bereits im vorherigen Abschnitt definiert und genutzt, um reguläre Grammatiken zu definieren. Dies sparen wir uns also hier uns verweisen auf \ref{kfG}.
+\paragraph{Wofür nutzen wir kontextfreie Grammatiken?} Wie reguläre Grammatiken auch nutzen wir kontextfreie Grammatiken für die Definition und Übersetzung von Programmiersprachen. Eine wichtige Aufgabe, die durch reguläre Grammatiken nicht abgebildet werden kann, ist die korrekte Interpretation von geklammerten arithmetischen Ausdrücken (z.B. $(a + b ) * c$) oder auch Code-Abschnitten wie \texttt{{\textbackslash}begin$\lbrace \rbrace$} und \texttt{{\textbackslash}end$\lbrace \rbrace$} in {\LaTeX}. Über reguläre Sprachen ließen sich diese Strukturen nicht abbilden. \parencite[vgl. ][S. 81]{Hopcroft}
+\subsection{Kellerautomaten}
+Nun besinnen wir uns nochmal auf Satz \ref{eqSatz} zurück. Reguläre Grammatiken, also der Typ 3 der Chomsky-Hierarchie, sind äquivalent zu endlichen Automaten. Diese Eigenschaft ließ sich nutzen, um reguläre Grammatiken zu visualisieren und Automatenoperationen auf ihnen auszuführen. Mittlerweile befinden wir uns in einem anderen Chomsky-Typ -- das legt nahe, dass kontextfreie Grammatiken auch einen Teil solcher Grammatiken umfassen, die nicht äquivalent zu endlichen Automaten sind. Doch gibt es ein Automatenkonzept für kontextfreie Grammatiken? Ja, die Kellerautomaten.
+\paragraph{Informatikerbiotop Keller} Vielleicht kommt Ihnen der Keller heimisch vor, vielleicht haben Sie dort (wie der Vater eines Schulfreundes) ihr Büro eingerichtet, von dem aus sie tagelang an einer Software herumprogrammieren, die Sie dann für viel Geld verkaufen. Vielleicht sind sie so beschäftigt, dass sich mit Essensresten verzierte Teller übereinander stapeln, weil Sie gutem Essen nie mehr Relevanz als einer Nebenbeitätigkeit beimessen. Behalten Sie diesen Tellerstapel -- doch stellen Sie sich sie sauber vor, in einem ordentlichen Stapel auf einer Feder wie in einer Mensa-Schlange Ihrer Hochschule. Jeder Gast nimmt sich einen Teller vom Stapel, sobald der Stapel leer ist, werden neue Teller nachgelegt. Der letzte nachgelegte Teller ist der erste, der anschließend heruntergenommen wird -- wir folgern: Ein Last-in-First-out-Prinzip (LIFO). Nun spätestens sollte Ihnen sofort die dazugehörige Datenstruktur einfallen, falls Sie den Begriff nicht sowieso direkt mit {\glqq}Keller{\grqq} assoziiert haben: \textbf{Stack}.
+Wir ergänzen endliche Automaten um einen Stack, der nun mit beeinflusst, welche Zustandsübergänge erfolgen.
+\begin{definition}
+Ein Kellerautomat $M$ ist ein System $(Q, \Sigma, \Gamma, \delta, q_0, Z_0, F)$, wobei ...
+\begin{itemize}
+\item $Q$ eine endliche Menge von Zuständen
+\item $\Sigma$ ein Eingabealphabet
+\item $\Gamma$ ein Kelleralphabet
+\item $q_0 \in Q$ ein Anfangszustand
+\item $Z_0 \in \Gamma$ ein Anfangssymbol
+\item $F \subseteq Q$ eine Menge von Endzuständen
+\item $\delta$ eine Abbildung der Form $Q \times (\Sigma \cup \lbrace \epsilon \rbrace) \times \Gamma \mapsto \mathcal{P}(Q \times \Gamma*)$
+\end{itemize}
+ist.
+\end{definition}
+Die Ähnlichkeit zur Definition endlicher Automaten ist augenscheinlich. Hinzu kommen ein Kelleralphabet (Worte, die auf den Stack gelegt werden), ein Anfangssymbol, dass sich zuallererst auf dem Stack befindet und eine veränderte Zustandsübergangsfunktion, die nun auch das oberste Element des Stacks mitberücksichtigt. 
+\[\delta(q, a, Z) = \lbrace (p_i, \gamma_i), ..., (p_m, \gamma_m) \rbrace \]
+Hier bezeichnet $q$ den aktuellen Zustand, $a$ das nächste eingelesene Element von $\Sigma$ und $Z$ das oberste Kellersymbol. $p_i$ ist Element der Zustandsmenge $Q$ und $\gamma_i$ eine Folge von Symbolen des Kelleralphabets. Grundsätzlich existieren drei Stack-Operationen:
+\begin{itemize}
+\item \textbf{Hinzufügen eines Elements}. Liegt vor der Operation ein $X$ auf dem Stack und soll ein $Y$ hinzugefügt werden, so ist der Stack anschließend $YX$.
+\item \textbf{Entfernen eines Elements}. $XY \rightarrow Y$
+\item \textbf{Unverändertlassen}.
+\end{itemize}
+
 \section{Typ 1: Kontextsensitive Grammatiken}
 \section{Typ 0: Rekursiv aufzählbare Grammatiken}
 \pagebreak
